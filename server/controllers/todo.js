@@ -22,7 +22,7 @@ class Controller {
       .then(newTodo => {
         let todoId = newTodo._id
     
-        User.update({_id: req.decoded.id}, {$push: {todos: todoId}})
+        User.updateOne({_id: req.decoded.id}, {$push: {todos: todoId}})
           .then(() => {
             res.status(200).json({message: 'Todo added!'})
           })
@@ -43,6 +43,18 @@ class Controller {
           .then(() => {
             res.status(200).json({message: 'Todo deleted!'})
           })
+      })
+      .catch(err => {
+        res.status(500).json(err)
+      })
+  }
+  
+  static changeStatus(req, res) {
+    let todoId = req.params.id
+    
+    Todo.updateOne({_id: todoId}, {completed: true})
+      .then(() => {
+        res.status(200).json({message: 'Todo status updated!'})
       })
       .catch(err => {
         res.status(500).json(err)
