@@ -13,6 +13,7 @@ const nameValidator = [
 const userSchema = new mongoose.Schema({
     fbId: {
         type : String,
+        unique: true,
         required : true
     },
     name : {

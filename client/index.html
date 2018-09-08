@@ -15,6 +15,27 @@
       crossorigin="anonymous">
     </script>
     <script type="text/javascript" src="js/index.js"></script>
+    <script>
+      function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+          $.ajax({
+            url: `http://localhost:3000/api/users/login-fb`,
+            method: "POST",
+            data: {
+              token_fb: response.authResponse.accessToken
+            }
+          })
+           .then(data => {
+             localStorage.setItem('token', data.token)
+             sessionStorage.user = data.user
+             location.reload()
+           })
+           .catch(err => {
+             console.log(err);
+           })
+        });
+      }
+    </script>
   </head>
   
   <body>
@@ -29,11 +50,19 @@
             <hr class="light my-4">
             <p class="text-faded mb-4">Create and manage your todo here</p>
             <p class="text-faded mb-4">Exciting?</p>
-            <a class="btn btn-light btn-xl" id="login">Get Started!</a>
+            <fb:login-button class="nav-link" id="login" scope="public_profile,email" onlogin="checkLoginState()">
+            </fb:login-button>
+            <a id="todo" class="btn btn-light btn-xl">Todo</a>
           </div>
         </div>
       </div>
     </section>
+    
+    <script>      
+      $("#todo").click(function(){
+          window.location.href = "todo.html"
+      })
+    </script>
     
   </body>
 

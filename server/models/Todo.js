@@ -7,6 +7,14 @@ const todoSchema = new mongoose.Schema({
         required : 'Name cannot be blank!',
         unique: true
     },
+    description : {
+        type : String,
+        required : 'Description cannot be blank!'
+    },
+    dueDate : {
+        type : Date,
+        required : 'Due date cannot be blank!'
+    },
     completed : {
         type : Boolean,
         default : false

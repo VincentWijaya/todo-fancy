@@ -24,8 +24,7 @@ class Controller {
               let obj = {
                 fbId: response.data.id,
                 name: response.data.name,
-                email: response.data.email,
-                todos: []            
+                email: response.data.email          
               }
               
               User.create(obj)
