@@ -8,4 +8,6 @@ router.get('/', function(req, res, next) {
   res.send('INI API USERS!');
 });
 
+router.post('/login-fb', userController.login)
+
 module.exports = router;
