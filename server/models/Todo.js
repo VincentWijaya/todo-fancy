@@ -4,8 +4,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 const todoSchema = new mongoose.Schema({
     name : {
         type : String,
-        required : 'Name cannot be blank!',
-        unique: true
+        required : 'Name cannot be blank!'
     },
     description : {
         type : String,
@@ -20,8 +19,6 @@ const todoSchema = new mongoose.Schema({
         default : false
     }
 }, {timestamps:true})
-
-todoSchema.plugin(uniqueValidator)
 
 const Todo = mongoose.model("Todo", todoSchema)
 

@@ -12,7 +12,6 @@ class Controller {
         res.status(200).json(user.todos)
       })
       .catch(err => {
-        console.log(err);
         res.status(500).json(err)
       })
   }
@@ -28,7 +27,7 @@ class Controller {
           })
       })
       .catch(err => {
-        res.status(500).json(err)
+        res.status(500).json(err.message)
       })
   }
   
@@ -59,6 +58,37 @@ class Controller {
       .catch(err => {
         res.status(500).json(err)
       })
+  }
+  
+  static getTodo(req, res) {
+    let todoId = req.params.id
+    
+    Todo.findById(todoId)
+      .then(todo => {
+        res.status(200).json(todo)
+      })
+      .catch(err => {
+        res.status(500).json(err)
+      })
+  }
+  
+  static updateTodo(req, res) {
+    let id = req.params.id
+    
+    let obj = {
+      name: req.body.todoName,
+      description: req.body.todoDesc,
+      dueDate: req.body.dueDate
+    }
+    
+    Todo.updateOne({_id: id}, obj, {runValidators: true})
+    .then(() => {
+      res.status(200).json({message: 'Todo updated!'})
+    })
+    .catch(err => {
+      res.status(500).json(err.message)
+    })
+    
   }
 
 }
