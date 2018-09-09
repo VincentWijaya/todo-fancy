@@ -15,8 +15,9 @@
       integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
       crossorigin="anonymous">
     </script>
-    <script type="text/javascript" src="js/index.js"></script>
-    <script type="text/javascript">
+    <script src="js/index.js"></script>
+    <script src="js/qrcode.js"></script>
+    <script>
       if (!localStorage.getItem('token')) {
         window.location.href = "index.html"
       }
@@ -79,7 +80,7 @@
     </section>
     
     <!-- The Modal -->
-    <div class="modal" id="myModal">
+    <div class="modal" id="modalUpdate">
       <div class="modal-dialog">
         <div class="modal-content">
         
@@ -115,6 +116,29 @@
       </div>
     </div>
     
+    <div class="modal" id="modalQr">
+      <div class="modal-dialog">
+        <div class="modal-content">
+        
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">QR Code</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="text-center" id="placeholder"></div>
+          </div>
+          
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
     <script type="text/javascript">      
       let today =  new Date().toISOString().split('T')[0]
       $("#date").attr('min', today)
@@ -159,12 +183,16 @@
                       <i class="fas fa-check" value="${todos[i]._id}"></i>
                     </button>
                             
-                    <button id="edit" onclick="getTodo()" title="Edit" data-toggle="modal" data-target="#myModal" value="${todos[i]._id}">
+                    <button id="edit" onclick="getTodo()" title="Edit" data-toggle="modal" data-target="#modalUpdate" value="${todos[i]._id}">
                         <i class="fas fa-edit" value="${todos[i]._id}"></i>
                     </button>
               
                     <button id="delete" onclick="deleteTodo()" title="Delete" data-toggle="tooltip" value="${todos[i]._id}">
                         <i class="fas fa-trash-alt" value="${todos[i]._id}"></i>
+                    </button>
+                    
+                    <button id="qr" onclick="showQR()" title="QR Code" data-toggle="modal" data-target="#modalQr" value="${todos[i]._id}">
+                        QR Code
                     </button>
                   </td>
                 </tr>
@@ -175,6 +203,39 @@
         .catch(err => {
           console.log(err);
         })
+        
+      function showQR() {        
+        let id = event.target.parentNode.value || event.target.value
+        
+        $.ajax({
+          type: 'GET',
+          url : `${base_url}/api/todos/${id}`,
+          headers: {
+              "token": token
+          }
+        })
+          .then(todo => {
+            let name = `Name: ${todo.name}, `
+            let desc = `Description: ${todo.description}, `
+            let due = `Due-date: ${new Date(todo.dueDate).toDateString()}, `
+            let stat = `Status: ${todo.completed == true ? 'Done' : 'Undone'}`
+            
+            let text = name + desc + due + stat
+            
+            let typeNumber = 0
+            let errorCorrectionLevel = 'L'
+            let qr = qrcode(typeNumber, errorCorrectionLevel)
+            
+            qr.addData(text)
+            qr.make()
+            
+            $("#placeholder").text("")
+            $("#placeholder").append(qr.createImgTag())
+          })
+          .catch(err => {
+            console.log(err.responseText);
+          })
+      }
     </script>
   </body>
 
