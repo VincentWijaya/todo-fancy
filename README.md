@@ -26,3 +26,6 @@ npm start
 client-side:
 live-server
 ```
+Access via: http://localhost:8080
+
+Demo: https://todo-fancy-aadae.firebaseapp.com/
